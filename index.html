@@ -2,47 +2,56 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LSCSD | Portal v12.0</title>
+    <title>LSCSD | Portal v13.0</title>
     <link rel="icon" type="image/png" href="image.png">
-    
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-        :root { --bg: #05070a; --card: #0d1117; --accent: #d4a373; --border: rgba(255, 255, 255, 0.08); --text: #f1f3f5; --text-dim: #8b949e; }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
+        :root { 
+            --bg: #05070a; --card: #0d1117; --accent: #d4a373; 
+            --border: rgba(255, 255, 255, 0.08); --text: #f1f3f5; --text-dim: #8b949e; 
+            --input-bg: #010409;
+        }
+
+        [data-theme="light"] {
+            --bg: #f0f2f5; --card: #ffffff; --accent: #b5895b; 
+            --border: rgba(0, 0, 0, 0.1); --text: #1a1d23; --text-dim: #65676b;
+            --input-bg: #f0f2f5;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; transition: background 0.3s, color 0.3s; }
         body { background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.4; overflow-x: hidden; }
         
-        header { display: flex; justify-content: space-between; align-items: center; padding: 0 40px; height: 80px; background: #0d1117; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
-        .brand img { height: 45px; cursor: pointer; transition: 0.3s; }
-        .brand img:hover { filter: drop-shadow(0 0 10px var(--accent)); }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 0 40px; height: 80px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+        .brand img { height: 45px; cursor: pointer; }
         
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        .form-box { background: var(--card); padding: 40px; border-radius: 12px; border: 1px solid var(--border); }
+        .form-box { background: var(--card); padding: 40px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
 
         label { display: block; font-size: 0.75rem; color: var(--accent); font-weight: 900; text-transform: uppercase; margin: 25px 0 12px; letter-spacing: 2px; }
         .form-box h2 { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px; }
 
         .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; }
-        .opt-btn { padding: 15px 25px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; color: var(--text-dim); cursor: pointer; font-size: 0.9rem; font-weight: 800; transition: 0.2s; }
-        .opt-btn.active { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 15px rgba(212, 163, 115, 0.2); }
+        .opt-btn { padding: 15px 25px; background: rgba(100,100,100,0.05); border: 1px solid var(--border); border-radius: 10px; color: var(--text-dim); cursor: pointer; font-size: 0.9rem; font-weight: 800; }
+        .opt-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 0 15px rgba(212, 163, 115, 0.2); }
 
-        .u-input { width: 100%; min-height: 55px; padding: 18px; background: #010409; border: 1px solid var(--border); border-radius: 10px; color: #fff; outline: none; font-size: 1rem; transition: 0.3s; margin-bottom: 5px; user-select: text; }
+        .u-input { width: 100%; min-height: 55px; padding: 18px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); outline: none; font-size: 1rem; user-select: text; }
         .u-input:focus { border-color: var(--accent); }
 
-        .btn-main { background: var(--accent); color: #000; width: 100%; padding: 20px; border-radius: 10px; border: none; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 40px; letter-spacing: 2px; }
-        .btn-admin { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 10px 18px; font-size: 0.7rem; border-radius: 8px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
+        .btn-main { background: var(--accent); color: #fff; width: 100%; padding: 20px; border-radius: 10px; border: none; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 20px; letter-spacing: 2px; }
+        .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 15px; font-size: 0.7rem; border-radius: 8px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-        .card { background: var(--card); padding: 40px 20px; border-radius: 15px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: 0.3s; }
+        .card { background: var(--card); padding: 40px 20px; border-radius: 15px; border: 1px solid var(--border); text-align: center; cursor: pointer; }
         .card:hover { border-color: var(--accent); transform: translateY(-5px); }
 
         .page { display: none; }
         .active-page { display: block; }
         #loader { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; justify-content: center; align-items: center; font-weight: 900; color: var(--accent); letter-spacing: 5px; }
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
-        .toast { background: #1a1d23; border-left: 4px solid var(--accent); padding: 18px 25px; border-radius: 8px; margin-bottom: 12px; font-size: 0.9rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .toast { background: var(--card); border-left: 4px solid var(--accent); color: var(--text); padding: 18px 25px; border-radius: 8px; margin-bottom: 12px; font-size: 0.9rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -50,10 +59,10 @@
     <div id="loader">LSCSD</div>
 
     <header id="ui-header" style="display:none;">
-        <div class="brand" onclick="showPage('page-home')">
-            <img src="image.png" alt="LOGO">
-        </div>
-        <div style="display:flex; align-items:center; gap:20px;">
+        <div class="brand" onclick="showPage('page-home')"><img src="image.png"></div>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <button class="btn-ghost" onclick="showPage('page-bug')">🐞 Баг-репорт</button>
+            <button class="btn-ghost" onclick="toggleTheme()" title="Сменить тему">🌓</button>
             <div id="adm-btn-wrap"></div>
             <img id="u-ava" style="width:38px; height:38px; border-radius:50%; border:2px solid var(--accent);">
             <button onclick="logout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-weight:900; font-size: 1.2rem;">✕</button>
@@ -62,26 +71,36 @@
 
     <div class="container">
         <div id="page-home" class="page active-page">
-            <h2 style="margin-bottom:35px;">ДОСТУПНЫЕ НАПРАВЛЕНИЯ</h2>
+            <h2 style="margin-bottom:35px;">КАТЕГОРИИ ПОРТАЛА</h2>
             <div id="grid-main" class="grid"></div>
         </div>
 
         <div id="page-apply" class="page">
             <div class="form-box">
-                <button onclick="showPage('page-home')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:900; margin-bottom:25px; font-size:0.7rem;">← НАЗАД</button>
+                <button onclick="showPage('page-home')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:900; margin-bottom:20px;">← НАЗАД</button>
                 <h2 id="apply-title"></h2>
                 <div id="apply-fields"></div>
-                <button id="submit-btn" class="btn-main" onclick="submitApplication()">ОТПРАВИТЬ ДАННЫЕ</button>
+                <button id="submit-btn" class="btn-main" onclick="submitApplication()">ОТПРАВИТЬ</button>
+            </div>
+        </div>
+
+        <div id="page-bug" class="page">
+            <div class="form-box">
+                <button onclick="showPage('page-home')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:900; margin-bottom:20px;">← НАЗАД</button>
+                <h2>СООБЩИТЬ О БАГЕ 🐞</h2>
+                <label>Опишите проблему</label>
+                <textarea id="bug-text" class="u-input" style="height:150px;" placeholder="Что пошло не так?"></textarea>
+                <button class="btn-main" onclick="sendBug()">ОТПРАВИТЬ РЕПОРТ</button>
             </div>
         </div>
 
         <div id="page-admin" class="page">
             <div style="display:grid; grid-template-columns: 280px 1fr; gap: 30px;">
                 <div style="background:var(--card); padding:25px; border-radius:15px; border:1px solid var(--border); height: fit-content;">
-                    <label style="margin-top:0;">ПАНЕЛЬ</label>
-                    <div style="cursor:pointer; padding:12px 0; font-weight:700; border-bottom: 1px solid var(--border);" onclick="openAdminTab('staff')">🛡️ Админы</div>
+                    <label style="margin-top:0;">АДМИН-МЕНЮ</label>
+                    <div style="cursor:pointer; padding:12px 0; font-weight:700; border-bottom: 1px solid var(--border);" onclick="openAdminTab('staff')">🛡️ Персонал</div>
                     <div id="cat-list"></div>
-                    <button class="btn-main" style="padding:12px; font-size:0.7rem; margin-top:25px;" onclick="createNewForm()">+ НОВАЯ КАТЕГОРИЯ</button>
+                    <button class="btn-main" style="padding:12px; font-size:0.7rem;" onclick="createNewForm()">+ КАТЕГОРИЯ</button>
                 </div>
                 <div id="admin-editor" class="form-box"></div>
             </div>
@@ -94,30 +113,51 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
+    const LOG_WEBHOOK = "https://discord.com/api/webhooks/1497511311104409712/ZfOmjN9zKEV1NaVZebNcelJe3mV6iwLjHaPoaq4AbxbhtL7_eRdDJxx0zJlwDbL1lfn3";
     const OWNER_ID = '1097047579876929616'; 
     const CLIENT_ID = '1496624504548364448';
     const REDIRECT = 'https://zenon123123.github.io/';
 
-    // Защита от F12 и Ctrl+U
-    document.addEventListener('keydown', function(e) {
-        if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || (e.ctrlKey && e.keyCode == 85)) {
-            e.preventDefault();
-            return false;
-        }
-    });
-    
     let state = { user: null, db: { categories: [], permissions: {} } };
     let activeCategory = null;
 
+    // ЗАЩИТА
+    document.addEventListener('keydown', e => { if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(e.keyCode)) || (e.ctrlKey && e.keyCode == 85)) e.preventDefault(); });
+
+    // ЛОГИРОВАНИЕ
+    async function sendLog(title, desc, color = 3447003, mention = "") {
+        try {
+            await fetch(LOG_WEBHOOK, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    content: mention,
+                    embeds: [{ title, description: desc, color, timestamp: new Date(), footer: { text: `User: ${state.user?.username || 'System'}` } }]
+                })
+            });
+        } catch(e) {}
+    }
+
+    // ТЕМЫ
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+    }
+
     async function init() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
         let token = new URLSearchParams(window.location.hash.slice(1)).get('access_token') || localStorage.getItem('sd_token');
         if (token) {
             localStorage.setItem('sd_token', token);
             window.history.replaceState(null, null, window.location.pathname);
             try {
                 const res = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } });
-                if (!res.ok) throw new Error();
                 state.user = await res.json();
+                sendLog("🔑 Вход в систему", `Пользователь **${state.user.username}** (ID: ${state.user.id}) авторизовался.`);
                 sync();
             } catch(e) { logout(); }
         } else { login(); }
@@ -136,7 +176,7 @@
         document.getElementById('ui-header').style.display = 'flex';
         document.getElementById('u-ava').src = `https://cdn.discordapp.com/avatars/${state.user.id}/${state.user.avatar}.png`;
         const isAdm = state.user.id === OWNER_ID || state.db.permissions?.[state.user.id];
-        if(isAdm) document.getElementById('adm-btn-wrap').innerHTML = `<button class="btn btn-admin" onclick="showPage('page-admin')">Админ-панель</button>`;
+        if(isAdm) document.getElementById('adm-btn-wrap').innerHTML = `<button class="btn-ghost" onclick="showPage('page-admin')">⚙️ Админ</button>`;
     }
 
     function renderHome() {
@@ -147,6 +187,15 @@
             d.onclick = () => openApplyForm(c.id);
             g.appendChild(d);
         });
+    }
+
+    async function sendBug() {
+        const text = document.getElementById('bug-text').value;
+        if(!text) return notify("❌ Введите текст баг-репорта");
+        await sendLog("🐞 НОВЫЙ БАГ-РЕПОРТ", text, 15158332, `<@${OWNER_ID}>`);
+        notify("✅ Репорт отправлен владельцу!");
+        document.getElementById('bug-text').value = '';
+        showPage('page-home');
     }
 
     function openApplyForm(id) {
@@ -214,7 +263,7 @@
             if(tx.value) fields.push({ name: tx.dataset.question, value: tx.value });
         });
 
-        if(fields.length === 0) { notify("❌ Пустая форма!"); btn.disabled = false; return; }
+        if(fields.length === 0) { notify("❌ Пусто!"); btn.disabled = false; return; }
 
         try {
             await fetch(finalHook, { 
@@ -223,18 +272,19 @@
                 body: JSON.stringify({
                     content: mentions.join(' '),
                     embeds: [{ 
-                        title: `ОТКЛИК: ${activeCategory.name}`, 
+                        title: `НОВОЕ ЗАЯВЛЕНИЕ: ${activeCategory.name}`, 
                         color: 13935475, 
                         fields: fields,
-                        footer: { text: `Discord: ${state.user.username}` },
+                        footer: { text: `User: ${state.user.username}` },
                         timestamp: new Date() 
                     }]
                 }) 
             });
-            notify("✅ Отправлено в Discord!");
+            notify("✅ Отправлено!");
+            sendLog("📝 Новая заявка", `Пользователь **${state.user.username}** подал заявку в категорию **${activeCategory.name}**.`);
             showPage('page-home');
-        } catch(e) { notify("❌ Ошибка отправки!"); }
-        btn.disabled = false; btn.innerText = "ОТПРАВИТЬ ДАННЫЕ";
+        } catch(e) { notify("❌ Ошибка вебхука"); }
+        btn.disabled = false; btn.innerText = "ОТПРАВИТЬ";
     }
 
     function renderSideList() {
@@ -252,67 +302,96 @@
     function editForm(id) {
         const f = state.db.categories.find(x => x.id === id);
         const editor = document.getElementById('admin-editor');
-        editor.innerHTML = '';
+        editor.innerHTML = '<h2>РЕДАКТОР</h2>';
 
-        const title = document.createElement('h2'); title.innerText = "РЕДАКТОР";
-        const labelE = document.createElement('label'); labelE.innerText = "Эмодзи";
-        const inputE = document.createElement('input'); inputE.className = 'u-input'; inputE.id = 'ed-e'; inputE.value = f.emoji;
-        const labelN = document.createElement('label'); labelN.innerText = "Название";
-        const inputN = document.createElement('input'); inputN.className = 'u-input'; inputN.id = 'ed-n'; inputN.value = f.name;
-        const labelH = document.createElement('label'); labelH.innerText = "Webhook URL";
-        const inputH = document.createElement('input'); inputH.className = 'u-input'; inputH.id = 'ed-h'; inputH.value = f.webhook||'';
-        const labelQ = document.createElement('label'); labelQ.innerText = "Вопросы";
-        const inputQ = document.createElement('textarea'); inputQ.className = 'u-input'; inputQ.id = 'ed-q'; 
-        inputQ.style.height = '200px'; inputQ.value = f.questions.join('\n');
+        const inputs = [
+            {l: "Эмодзи", i: 'ed-e', v: f.emoji},
+            {l: "Название", i: 'ed-n', v: f.name},
+            {l: "Вебхук", i: 'ed-h', v: f.webhook||''},
+            {l: "Вопросы (по одному на строку)", i: 'ed-q', v: f.questions.join('\n'), t: 'area'}
+        ];
+
+        inputs.forEach(cfg => {
+            const label = document.createElement('label'); label.innerText = cfg.l;
+            const el = document.createElement(cfg.t === 'area' ? 'textarea' : 'input');
+            el.className = 'u-input'; el.id = cfg.i; el.value = cfg.v;
+            if(cfg.t === 'area') el.style.height = '150px';
+            editor.appendChild(label); editor.appendChild(el);
+        });
 
         const btnS = document.createElement('button'); btnS.className = 'btn-main'; btnS.innerText = "СОХРАНИТЬ";
         btnS.onclick = () => saveF(id);
-
         const btnD = document.createElement('button'); btnD.className = 'btn-main'; 
         btnD.style.cssText = "background:rgba(255,0,0,0.1); color:red; margin-top:10px;"; btnD.innerText = "УДАЛИТЬ";
         btnD.onclick = () => delF(id);
 
-        [title, labelE, inputE, labelN, inputN, labelH, inputH, labelQ, inputQ, btnS, btnD].forEach(el => editor.appendChild(el));
+        editor.appendChild(btnS); editor.appendChild(btnD);
     }
 
     function saveF(id) {
         const idx = state.db.categories.findIndex(x => x.id === id);
+        const name = document.getElementById('ed-n').value;
         state.db.categories[idx] = {
-            id, name: document.getElementById('ed-n').value,
+            id, name,
             emoji: document.getElementById('ed-e').value,
             webhook: document.getElementById('ed-h').value,
             questions: document.getElementById('ed-q').value.split('\n').filter(s=>s.trim())
         };
-        database.ref('portal_db/categories').set(state.db.categories).then(()=>notify("✅ Обновлено"));
+        database.ref('portal_db/categories').set(state.db.categories).then(()=>{
+            notify("✅ Сохранено");
+            sendLog("🛠️ Редактирование", `Админ **${state.user.username}** обновил категорию **${name}**.`);
+        });
     }
 
     function createNewForm() {
         const id = Date.now();
-        state.db.categories.push({ id, name: "Новая вакансия", emoji: "📋", questions: ["Имя Фамилия:", "Отдел: [PAI, SPD]"] });
-        database.ref('portal_db/categories').set(state.db.categories).then(()=>editForm(id));
+        state.db.categories.push({ id, name: "Новая категория", emoji: "📋", questions: ["Имя Фамилия:", "Отдел: [PAI, SPD]"] });
+        database.ref('portal_db/categories').set(state.db.categories).then(() => {
+            editForm(id);
+            sendLog("➕ Создание", `Админ **${state.user.username}** создал новую категорию.`);
+        });
     }
 
-    function delF(id) { if(confirm("Удалить?")) { state.db.categories = state.db.categories.filter(x=>x.id!==id); database.ref('portal_db/categories').set(state.db.categories).then(()=>document.getElementById('admin-editor').innerHTML=''); } }
+    function delF(id) { 
+        if(confirm("Удалить?")) { 
+            state.db.categories = state.db.categories.filter(x=>x.id!==id); 
+            database.ref('portal_db/categories').set(state.db.categories).then(() => {
+                document.getElementById('admin-editor').innerHTML = '';
+                sendLog("🗑️ Удаление", `Админ **${state.user.username}** удалил категорию.`);
+            });
+        } 
+    }
     
     function openAdminTab(t) { if(t==='staff') {
         const editor = document.getElementById('admin-editor'); editor.innerHTML = '<h2>АДМИНИСТРАТОРЫ</h2><label>DISCORD ID</label>';
-        const input = document.createElement('input'); input.className = 'u-input'; input.id = 'si'; input.placeholder = "ID пользователя";
+        const input = document.createElement('input'); input.className = 'u-input'; input.id = 'si'; input.placeholder = "ID";
         const btn = document.createElement('button'); btn.className = 'btn-main'; btn.innerText = "ДОБАВИТЬ";
-        btn.onclick = () => { const id = document.getElementById('si').value; if(id) database.ref('portal_db/permissions/'+id).set(1).then(()=>openAdminTab('staff')); };
+        btn.onclick = () => { 
+            const id = document.getElementById('si').value; 
+            if(id) database.ref('portal_db/permissions/'+id).set(1).then(() => {
+                sendLog("🛡️ Права", `Админ **${state.user.username}** выдал доступ ID: **${id}**.`);
+                openAdminTab('staff');
+            }); 
+        };
         editor.appendChild(input); editor.appendChild(btn);
         for(let id in state.db.permissions) {
             const item = document.createElement('div');
-            item.style.cssText = "padding:15px; border:1px solid var(--border); border-radius:10px; margin-top:10px; display:flex; justify-content:space-between; background:#010409;";
+            item.style.cssText = "padding:15px; border:1px solid var(--border); border-radius:10px; margin-top:10px; display:flex; justify-content:space-between; background:var(--input-bg);";
             item.innerHTML = `<span>${id}</span> <span style="color:red; cursor:pointer;" onclick="remS('${id}')">УДАЛИТЬ</span>`;
             editor.appendChild(item);
         }
     }}
-    function remS(id) { database.ref('portal_db/permissions/'+id).remove().then(()=>openAdminTab('staff')); }
+    function remS(id) { 
+        database.ref('portal_db/permissions/'+id).remove().then(() => {
+            sendLog("🚫 Права", `Админ **${state.user.username}** забрал доступ у ID: **${id}**.`);
+            openAdminTab('staff');
+        }); 
+    }
     
     function notify(m) { const d = document.createElement('div'); d.className = 'toast'; d.innerText = m; document.getElementById('toast-container').appendChild(d); setTimeout(()=>d.remove(), 3000); }
     function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById(id).classList.add('active-page'); window.scrollTo(0,0); }
     function login() { window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT)}&response_type=token&scope=identify`; }
-    function logout() { localStorage.removeItem('sd_token'); location.reload(); }
+    function logout() { sendLog("🚪 Выход", `Пользователь **${state.user.username}** вышел из системы.`, 15158332); localStorage.removeItem('sd_token'); location.reload(); }
     window.onload = init;
 </script>
 </body>
